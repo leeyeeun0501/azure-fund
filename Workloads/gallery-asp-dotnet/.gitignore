@@ -1,0 +1,11 @@
+# .NET build output
+bin/
+obj/
+publish/
+*.user
+
+# Local runtime artifacts
+gallery.db
+gallery.db-*
+uploads/
+wwwroot/assets/images/uploads/

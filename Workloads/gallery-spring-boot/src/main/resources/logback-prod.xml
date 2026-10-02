@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="APPLICATION_NAME" source="spring.application.name" />
+    <springProperty name="SPRING_PROFILES_ACTIVE" source="spring.profiles.active" defaultValue="dev"/>
+    <springProperty name="LOGGING_OPS_LEVEL" source="logging.ops.level" defaultValue="WARN"/>
+
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>./${APPLICATION_NAME}-logs/${APPLICATION_NAME}.current.log</file>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <includeContext>true</includeContext>
+            <customFields>
+                {"application_name": "${APPLICATION_NAME}", "profile_active":"${SPRING_PROFILES_ACTIVE}"}
+            </customFields>
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <level>severity</level>
+                <message>message</message>
+                <thread>thread</thread>
+                <logger>logger</logger>
+            </fieldNames>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./${APPLICATION_NAME}-logs/${APPLICATION_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+
+    </appender>
+
+    <root level="${LOGGING_OPS_LEVEL}">
+        <appender-ref ref="fileAppender" />
+    </root>
+
+</configuration>

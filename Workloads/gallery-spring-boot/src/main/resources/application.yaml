@@ -1,0 +1,120 @@
+spring:
+  application:
+    name: gallery
+  profiles:
+    active: dev
+
+
+---
+# default
+spring:
+  mvc:
+    static-path-pattern: /assets/**
+  web:
+    resources:
+      static-locations: classpath:/assets/
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10485760
+      max-request-size: 104857600
+      file-size-threshold: 5242880
+  datasource:
+    url: jdbc:h2:mem:gallery;DB_CLOSE_DELAY=-1;MODE=MYSQL
+    username: sa
+    password:
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 20
+  sql:
+    init:
+      mode: always
+  thymeleaf:
+    check-template-location: true
+    mode: HTML
+    prefix : classpath:templates/
+    suffix : .html
+    encoding: UTF-8
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: false
+      show-details: never
+
+mybatis:
+  config-location: classpath:mybatis/configuration.xml
+
+app:
+  storage:
+    type: local
+    local:
+      path: uploads
+      url:
+        prefix: /assets/images/uploads
+    s3:
+      bucket: gallery
+    blob:
+      account: ${AZURE_STORAGE_ACCOUNT:}
+      container: gallery
+    ncp:
+      bucket: gallery
+      # 서버가 객체를 올리는 주소. Private Subnet에서 사설 도메인으로 통신한다.
+      endpoint: ${NCP_OBJECT_ENDPOINT:https://kr.object.private.ncloudstorage.com}
+      # 브라우저가 이미지를 받아 가는 주소. 비우면 endpoint를 그대로 쓴다.
+      public-endpoint: ${NCP_OBJECT_PUBLIC_ENDPOINT:https://kr.object.ncloudstorage.com}
+      region: kr-standard
+
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+  level:
+    root: INFO
+
+server:
+  servlet:
+    context-path: /
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
+  port: 8080
+
+
+---
+# dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+  thymeleaf:
+    cache: false
+
+
+---
+# prod
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  thymeleaf:
+    cache: true
+
+logging:
+  config: classpath:logback-prod.xml
+  ops:
+    level: WARN

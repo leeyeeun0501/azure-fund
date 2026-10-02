@@ -1,0 +1,65 @@
+# spring configuration
+spring:
+  application:
+    name: idenicon
+  profiles:
+    active: development
+
+
+---
+# configuration: default(common)
+spring:
+  data:
+    redis:
+      connect-timeout: 5s
+      timeout: 5s
+
+      lettuce:
+        pool:
+          enabled: false
+      jedis:
+        pool:
+          enabled: true
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: 1ms
+          time-between-eviction-runs: 30s
+
+      host: redis-cache
+      port: 6379
+#      username: default
+#      password: secret
+
+server:
+  servlet:
+    context-path: /
+    encoding:
+      charset: utf-8
+      enabled: true
+  port: 80
+
+
+
+---
+# configuration: development
+spring:
+  config:
+    activate:
+      on-profile: development
+  devtools:
+    add-properties: false
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+    remote:
+      secret: mysecret
+
+
+---
+# configuration: production
+spring:
+  config:
+    activate:
+      on-profile: production

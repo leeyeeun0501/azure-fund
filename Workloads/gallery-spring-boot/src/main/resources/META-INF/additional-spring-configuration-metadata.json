@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "logging.ops.level",
+      "type": "java.lang.String"
+    }
+  ]
+}

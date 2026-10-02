@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gallery</title>
+<link th:href="@{/assets/css/gallery.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/assets/css/lightbox.css}" rel="stylesheet" type="text/css">
+<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
+<script src="https://code.jquery.com/jquery-3.6.2.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" th:src="@{/assets/js/lightbox.js}"></script>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="top-bar__inner">
+            <div class="top-bar__brand">
+                <img th:src="@{/assets/images/gallery.png}" alt="" class="top-bar__logo" width="36" height="36">
+                <span class="top-bar__title">Gallery</span>
+            </div>
+            <a href="#" id="upload-image" class="btn btn--primary">이미지 올리기</a>
+        </div>
+    </header>
+
+    <main class="main">
+        <div id="gallery" class="gallery">
+            <ul class="gallery__grid">
+                <li th:each="item, status:${items}" class="gallery__item">
+                    <a th:href="@{${item.url}}"
+                       class="gallery__thumb image"
+                       data-lightbox="gallery"
+                       th:style="|background-image:url(@{${item.url}})|">&nbsp;</a>
+                    <a th:href="@{|/${item.id}/delete|}" class="gallery__delete del-button" title="삭제"><span class="sr-only">삭제</span></a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="dialog-upload-form" title="이미지 업로드" class="dialog-upload" style="display: none">
+            <p class="dialog-upload__hint">이미지와 간단한 코멘트를 입력해 주세요.</p>
+            <form th:action="@{/new}" method="post" enctype="multipart/form-data" class="dialog-upload__form">
+                <label for="input-comments" class="dialog-upload__label">코멘트</label>
+                <input type="text" id="input-comments" name="comment" value="" class="dialog-upload__input text-input" autocomplete="off">
+                <label for="input-file" class="dialog-upload__label">이미지</label>
+                <input type="file" id="input-file" name="file" class="dialog-upload__file">
+                <input type="submit" tabindex="-1" class="dialog-upload__hidden-submit">
+            </form>
+        </div>
+    </main>
+
+    <footer th:if="${hostId != null}" class="site-footer">
+        <div class="site-footer__inner">
+            <small class="site-footer__text">Instance: <span th:text="${hostId}">host</span></small>
+        </div>
+    </footer>
+</body>
+</html>
+<script type="text/javascript">
+    $(function(){
+        const dialogUpload = $("#dialog-upload-form").dialog({
+            autoOpen: false,
+            height: "auto",
+            width: $(window).width() < 480 ? "90%" : 360,
+            maxWidth: 420,
+            modal: true,
+            dialogClass: "ui-dialog--gallery",
+            buttons: {
+                "업로드": () => {
+                    $("#dialog-upload-form form").submit();
+                    dialogUpload.dialog("close");
+                },
+                "취소": () => {
+                    dialogUpload.dialog("close");
+                }
+            },
+            close: () => {
+                $("#dialog-upload-form form").get(0).reset();
+            }
+        });
+
+        $("#upload-image").click(e => {
+            e.preventDefault();
+            dialogUpload.dialog("open");
+        });
+
+        $(window).on("resize", () => {
+            if (dialogUpload.dialog("isOpen")) {
+                dialogUpload.dialog("option", "width", $(window).width() < 480 ? "90%" : 360);
+            }
+        });
+    });
+</script>

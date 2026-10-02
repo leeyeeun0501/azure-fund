@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- 산출물 이름을 gallery.dll로 고정 (Spring Boot의 gallery.jar와 대칭) -->
+    <AssemblyName>gallery</AssemblyName>
+    <RootNamespace>Gallery</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Dapper(raw SQL): Spring Boot의 MyBatis에 대응. SQL을 코드에 그대로 노출한다 -->
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <!-- ADO.NET 드라이버: SQLite(기본, H2 대응) + MariaDB(MySqlConnector, mariadb-java-client 대응) -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+    <PackageReference Include="MySqlConnector" Version="2.3.7" />
+    <!-- 클라우드 스토리지: Azure Blob (Spring Boot의 S3에 대응) -->
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.22.2" />
+  </ItemGroup>
+
+</Project>
